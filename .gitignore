@@ -2,3 +2,7 @@
 .cproject
 .project
 core
+Release
+*.xml
+*.prefs
+*.json
