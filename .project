@@ -32,6 +32,31 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>Adafruit_VEML6070</name>
+			<type>2</type>
+			<location>/Users/maurizio/Documents/Arduino/libraries/Adafruit_VEML6070</location>
+		</link>
+		<link>
+			<name>BH1750-master</name>
+			<type>2</type>
+			<location>/Users/maurizio/Documents/Arduino/libraries/BH1750-master</location>
+		</link>
+		<link>
+			<name>BMP085</name>
+			<type>2</type>
+			<location>/Users/maurizio/Documents/Arduino/libraries/BMP085</location>
+		</link>
+		<link>
+			<name>SHT21</name>
+			<type>2</type>
+			<location>/Users/maurizio/Documents/Arduino/libraries/SHT21</location>
+		</link>
+		<link>
+			<name>ethercard_master</name>
+			<type>2</type>
+			<location>/Users/maurizio/Documents/Arduino/libraries/ethercard_master</location>
+		</link>
+		<link>
 			<name>core/core</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.21/cores/arduino</locationURI>
@@ -40,6 +65,26 @@
 			<name>core/variant</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.21/variants/eightanaloginputs</locationURI>
+		</link>
+		<link>
+			<name>libraries/RTClib</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/RTClib/1.2.0</locationURI>
+		</link>
+		<link>
+			<name>libraries/SD</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/SD/1.2.2</locationURI>
+		</link>
+		<link>
+			<name>libraries/SPI</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.21/libraries/SPI</locationURI>
+		</link>
+		<link>
+			<name>libraries/Wire</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/arduino/hardware/avr/1.6.21/libraries/Wire</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
