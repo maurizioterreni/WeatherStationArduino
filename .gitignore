@@ -6,3 +6,4 @@ Release
 *.xml
 *.prefs
 *.json
+WifiConfig.h
