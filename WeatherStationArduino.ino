@@ -10,12 +10,9 @@ SoftwareSerial Serial1(6, 7); // RX, TX
 
 
 #include "WeatherSensor.h"
+#include "WifiConfig.h"
 
-char ssid[] = "Twim";            // your network SSID (name)
-char pass[] = "12345678";        // your network password
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
-
-char server[] = "www.maurizioterreni.altervista.org";
 
 // Initialize the Ethernet client object
 WiFiEspClient client;
