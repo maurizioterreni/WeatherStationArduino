@@ -19,13 +19,23 @@ class WeatherSensor
     float readHumidity();
     uint16_t readUv();
     uint16_t readLux();
+    void updateSensor();
   private:
     static WeatherSensor* instance;
     WeatherSensor();
+    void init();
     Adafruit_BMP085 bmp; //Sensore pressione
     SHT21 sht; //Sensore temperatura
     Adafruit_VEML6070 uv; //Sensore UV
     BH1750 lightMeter; //Sendore Lux
+
+    int32_t pressure;
+    float temperature_bmp;
+    float temperature_sht;
+    float humidity;
+    uint16_t lux;
+    uint16_t uv_sensor;
+    bool bmpIsOn;
 };
 
 #endif
