@@ -4,7 +4,7 @@
 #include "Arduino.h"
 #include <Wire.h>
 #include <Adafruit_BMP085.h>
-#include <SHT21.h>
+#include <Adafruit_HTU21DF.h>
 #include <Adafruit_VEML6070.h>
 #include <BH1750.h>
 
@@ -25,7 +25,7 @@ class WeatherSensor
     WeatherSensor();
     void init();
     Adafruit_BMP085 bmp; //Sensore pressione
-    SHT21 sht; //Sensore temperatura
+    Adafruit_HTU21DF htu; //Sensore temperatura
     Adafruit_VEML6070 uv; //Sensore UV
     BH1750 lightMeter; //Sendore Lux
 

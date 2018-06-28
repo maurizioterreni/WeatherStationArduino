@@ -19,8 +19,13 @@ WeatherSensor::WeatherSensor(){
 	bmpIsOn = false;
 	if (bmp.begin()) {
 		bmpIsOn = true;
+		Serial.println("test bmp");
 	}
+
+	lightMeter.begin();
 	uv.begin(VEML6070_1_T);
+	htu = Adafruit_HTU21DF();
+	htu.begin();
 
 	init();
 }
@@ -61,22 +66,27 @@ uint16_t WeatherSensor::readLux(){
 
 
 void WeatherSensor::init(){
+	Serial.println("init()");
 	if(bmpIsOn){
+		Serial.println("bmp on");
 		pressure = bmp.readPressure();
 		temperature_bmp = bmp.readTemperature();
 	}else{
 		pressure = -1;
 		temperature_bmp = -200.0;
 	}
-
-	temperature_sht = sht.getTemperature();
-	humidity = sht.getHumidity();
+	Serial.println("sht");
+	temperature_sht = htu.readTemperature();
+	humidity = htu.readHumidity();
+	Serial.println("lux");
 	lux = lightMeter.readLightLevel();
+	Serial.println("uv");
 	uv_sensor = uv.readUV();
 }
 
 
 void WeatherSensor::updateSensor(){
+	Serial.println("updateSensor()");
 	if(bmpIsOn){
 		pressure = (int32_t) ((pressure + bmp.readPressure())/2);
 		temperature_bmp = ((temperature_bmp + bmp.readTemperature())/2);
@@ -85,8 +95,8 @@ void WeatherSensor::updateSensor(){
 		temperature_bmp = -200.0;
 	}
 
-	temperature_sht = ((temperature_sht + sht.getTemperature())/2);
-	humidity = ((humidity + sht.getHumidity())/2);
+	temperature_sht = ((temperature_sht + htu.readTemperature())/2);
+	humidity = ((humidity + htu.readHumidity())/2);
 	lux = (uint16_t) ((lux + lightMeter.readLightLevel()) / 2);
 	uv_sensor = (uint16_t) ((uv_sensor + uv.readUV()) / 2);
 }
