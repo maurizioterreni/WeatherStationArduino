@@ -66,27 +66,22 @@ uint16_t WeatherSensor::readLux(){
 
 
 void WeatherSensor::init(){
-	Serial.println("init()");
+	Serial.println("Sensore Init()");
 	if(bmpIsOn){
-		Serial.println("bmp on");
 		pressure = bmp.readPressure();
 		temperature_bmp = bmp.readTemperature();
 	}else{
 		pressure = -1;
 		temperature_bmp = -200.0;
 	}
-	Serial.println("sht");
 	temperature_sht = htu.readTemperature();
 	humidity = htu.readHumidity();
-	Serial.println("lux");
 	lux = lightMeter.readLightLevel();
-	Serial.println("uv");
 	uv_sensor = uv.readUV();
 }
 
 
 void WeatherSensor::updateSensor(){
-	Serial.println("updateSensor()");
 	if(bmpIsOn){
 		pressure = (int32_t) ((pressure + bmp.readPressure())/2);
 		temperature_bmp = ((temperature_bmp + bmp.readTemperature())/2);
@@ -99,4 +94,21 @@ void WeatherSensor::updateSensor(){
 	humidity = ((humidity + htu.readHumidity())/2);
 	lux = (uint16_t) ((lux + lightMeter.readLightLevel()) / 2);
 	uv_sensor = (uint16_t) ((uv_sensor + uv.readUV()) / 2);
+}
+
+String WeatherSensor::toString() {
+	String dataString = "";
+	dataString += String(readPressure());
+	dataString += ";";
+	dataString += String(readTemperature(WeatherSensor::BMP));
+	dataString += ";";
+	dataString += String(readTemperature(WeatherSensor::SHT));
+	dataString += ";";
+	dataString += String(readHumidity());
+	dataString += ";";
+	dataString += String(readUv());
+	dataString += ";";
+	dataString += String(readLux());
+
+	return dataString;
 }

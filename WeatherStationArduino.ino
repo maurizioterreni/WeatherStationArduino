@@ -10,11 +10,11 @@ SoftwareSerial Serial1(6, 7); // RX, TX
 
 
 #include "WeatherSensor.h"
+#include "DataLogger.h"
 #include "WifiConfig.h"
 
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
-char server[] = "www.maurizioterreni.altervista.org";
-char version[] = "0.1.1";
+String version = "0.1.4";
 
 // Initialize the Ethernet client object
 WiFiEspClient client;
@@ -70,6 +70,8 @@ void loop() {
 		previousMillis_url = currentMillis;
 
 		digitalWrite(ledOKPin, HIGH);
+
+		DataLogger::getInstance()->saveData("");
 /*
 		if (client.connect(server, 80)) {
 			Serial.println("Connected to server");
@@ -90,13 +92,13 @@ void loop() {
 		}
 */
 		Serial.println("Start ReadData");
-		Serial.println(getStrData());
+		Serial.println(WeatherSensor::getInstance()->toString());
 		Serial.println("Finish ReadData");
     delay(1000);
 		digitalWrite(ledOKPin, LOW);
 	}
 }
-
+/*
 
 String getStrData() {
 	String dataString = "GET /weather/arduino.php?data=";
@@ -117,3 +119,4 @@ String getStrData() {
 	return const_cast<char*>(dataString.c_str());
 
 }
+*/

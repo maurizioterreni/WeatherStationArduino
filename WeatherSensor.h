@@ -20,6 +20,7 @@ class WeatherSensor
     uint16_t readUv();
     uint16_t readLux();
     void updateSensor();
+    String toString();
   private:
     static WeatherSensor* instance;
     WeatherSensor();
