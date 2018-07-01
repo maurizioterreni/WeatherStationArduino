@@ -1,15 +1,15 @@
 #include "Arduino.h"
 #include <Wire.h>
 #include <SPI.h>
-#include <RTClib.h>
 
 
 #include "WeatherSensor.h"
 #include "DataLogger.h"
 #include "WebClient.h"
+#include "TimeSync.h"
 
 
-String version = "0.3.12";
+String version = "0.4.12";
 
 unsigned long previousMillis_url = millis();
 unsigned long previousMillis_update_sensor = millis();
@@ -19,8 +19,6 @@ const long interval_update_sensor = 5000;//60000; //1min
 const int ledOKPin = 13;
 const int ledKOPin = 13;
 
-RTC_DS1307 rtc;
-
 void setup() {
 	Wire.begin();
 
@@ -28,22 +26,11 @@ void setup() {
 
 	Serial.println("Weather Station Arduino v" + version);
 
+	unsigned long timestamp = WebClient::getInstance()->syncTimeNTP();
 
-	if (! rtc.begin()) {
-		Serial.println("Couldn't find RTC");
-		while (1);
-	}
+	Serial.println("Timestamp: " + timestamp);
 
-	if (! rtc.isrunning()) {
-		Serial.println("RTC is NOT running!");
-
-	}
-
-
-	rtc.adjust(DateTime(2018, 6, 29, 14, 34, 0));
-
-	//Serial.println(WebClient::getInstance()->getTimestamp());
-
+	TimeSync::getInstance()->syncTime(timestamp);
 }
 
 void loop() {
@@ -63,41 +50,11 @@ void loop() {
 
 		digitalWrite(ledOKPin, HIGH);
 
-		String name = getFileName();
-
-		Serial.println(name);
-
-		DataLogger::getInstance()->saveData(name, getTimestamp());
-		WebClient::getInstance()->sendData(WeatherSensor::getInstance()->toString(), getTimestamp());
+		DataLogger::getInstance()->saveData(TimeSync::getInstance()->getDateAsString(), TimeSync::getInstance()->getTimestamp());
+		WebClient::getInstance()->sendData(WeatherSensor::getInstance()->toString(), TimeSync::getInstance()->getTimestamp());
 
 
 		digitalWrite(ledOKPin, LOW);
 	}
-}
-
-
-String getFileName(){
-	DateTime now = rtc.now();
-	String name = String(now.year());
-
-	if(now.month() < 9){
-		name += "0";
-	}
-
-	name += now.month();
-
-	if(now.day() < 9){
-		name += "0";
-	}
-
-	name += String(now.day());
-
-	return name;
-}
-
-
-uint32_t getTimestamp(){
-	DateTime now = rtc.now();
-	return now.unixtime();
 }
 
