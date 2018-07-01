@@ -15,9 +15,9 @@
 
 class DataLogger {
 public:
-	void saveData(String fileName);
+	void saveData(String fileName, uint32_t timestamp);
 	static DataLogger* getInstance();
-	const int CHIP_SELECT = 5;
+	const int CHIP_SELECT = 4;
 private:
 	static DataLogger* instance;
 	bool isSdActive;

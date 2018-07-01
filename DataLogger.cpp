@@ -17,7 +17,7 @@ DataLogger* DataLogger::getInstance() {
 	return instance;
 }
 
-void DataLogger::saveData(String fileName) {
+void DataLogger::saveData(String fileName, uint32_t timestamp) {
 	if(!isSdActive){
 		return;
 	}
@@ -25,7 +25,8 @@ void DataLogger::saveData(String fileName) {
 	File dataFile = SD.open(fileName + ".wth", FILE_WRITE);
 
 	if (dataFile) {
-		dataFile.println(WeatherSensor::getInstance()->toString() + "\n");
+    Serial.println("File write");
+		dataFile.println(WeatherSensor::getInstance()->toString() + ";" + String(timestamp));
 		dataFile.close();
 	}
 
