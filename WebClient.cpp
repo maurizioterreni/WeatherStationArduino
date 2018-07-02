@@ -8,8 +8,7 @@
 #include "WebClient.h"
 
 WebClient* WebClient::instance = 0;
-unsigned int WebClient::localPort = 8888;
-byte WebClient::timeServer[] = {193,5,216,14};//{193, 79, 237, 14};
+
 
 WebClient* WebClient::getInstance() {
 	if (instance == 0){
@@ -40,8 +39,31 @@ void WebClient::sendData(String data, uint32_t timestamp) {
 
 unsigned long WebClient::syncTimeNTP() {
 
+	unsigned int localPort = 8888;
+	const int NTP_PACKET_SIZE = 48;
+	byte packetBuffer[ NTP_PACKET_SIZE];
 
-	sendNTPpacket(timeServer);
+	Udp.begin(localPort);
+
+	char server[] = "time.nist.gov";
+	memset(packetBuffer, 0, NTP_PACKET_SIZE);
+	// Initialize values needed to form NTP request
+	// (see URL above for details on the packets)
+	packetBuffer[0] = 0b11100011;   // LI, Version, Mode
+	packetBuffer[1] = 0;     // Stratum, or type of clock
+	packetBuffer[2] = 6;     // Polling Interval
+	packetBuffer[3] = 0xEC;  // Peer Clock Precision
+	// 8 bytes of zero for Root Delay & Root Dispersion
+	packetBuffer[12]  = 49;
+	packetBuffer[13]  = 0x4E;
+	packetBuffer[14]  = 49;
+	packetBuffer[15]  = 52;
+
+	// all NTP fields have been given values, now
+	// you can send a packet requesting a timestamp:
+	Udp.beginPacket(server, 123); //NTP requests are to port 123
+	Udp.write(packetBuffer, NTP_PACKET_SIZE);
+	Udp.endPacket();
 
 	// wait to see if a reply is available
 	delay(1000);
@@ -49,54 +71,27 @@ unsigned long WebClient::syncTimeNTP() {
 
 	if ( Udp.available() ) {
 
-		Udp.read(pb, 48);
+		Udp.read(packetBuffer, NTP_PACKET_SIZE);
 
 
-		// NTP contains four timestamps with an integer part and a fraction part
-		// we only use the integer part here
-		unsigned long t4 = 0;
-		for (int i=0; i< 4; i++)
-		{
-			t4 = t4 << 8 | pb[40+i];
-		}
+		unsigned long highWord = word(packetBuffer[40], packetBuffer[41]);
+		unsigned long lowWord = word(packetBuffer[42], packetBuffer[43]);
+		// combine the four bytes (two words) into a long integer
+		// this is NTP time (seconds since Jan 1 1900):
+		unsigned long secsSince1900 = highWord << 16 | lowWord;
+		Serial.print("Seconds since Jan 1 1900 = " );
+		Serial.println(secsSince1900);
 
-		// part of the fractional part
-		// could be 4 bytes but this is more precise than the 1307 RTC
-		// which has a precision of ONE second
-		// in fact one byte is sufficient for 1307
-		float f4 = ((long)pb[44] * 256 + pb[45]) / 65536.0;
-
-		// NOTE:
-		// one could use the fractional part to set the RTC more precise
-		// 1) at the right (calculated) moment to the NEXT second!
-		//    t4++;
-		//    delay(1000 - f4*1000);
-		//    RTC.adjust(DateTime(t4));
-		//    keep in mind that the time in the packet was the time at
-		//    the NTP server at sending time so one should take into account
-		//    the network latency (try ping!) and the processing of the data
-		//    ==> delay (850 - f4*1000);
-		// 2) simply use it to round up the second
-		//    f > 0.5 => add 1 to the second before adjusting the RTC
-		//   (or lower threshold eg 0.4 if one keeps network latency etc in mind)
-		// 3) a SW RTC might be more precise, => ardomic clock :)
-
-
-		// convert NTP to UNIX time, differs seventy years = 2208988800 seconds
-		// NTP starts Jan 1, 1900
-		// Unix time starts on Jan 1 1970.
+		// now convert NTP time into everyday time:
+		Serial.print("Unix time = ");
+		// Unix time starts on Jan 1 1970. In seconds, that's 2208988800:
 		const unsigned long seventyYears = 2208988800UL;
+		// subtract seventy years:
+		unsigned long epoch = secsSince1900 - seventyYears;
+		// print Unix time:
+		Serial.println(epoch);
 
-
-		t4 -= seventyYears;
-
-
-
-		t4 -= (3 * 3600L);     // Notice the L for long calculations!!
-		t4 += 1;               // adjust the delay(1000) at begin of loop!
-		if (f4 > 0.4) t4++;    // adjust fractional part, see above
-
-		return t4;
+		return epoch;
 	}else{
 		Serial.println("No UDP available ...");
 	}
@@ -104,37 +99,11 @@ unsigned long WebClient::syncTimeNTP() {
 	return 0;
 }
 
-void WebClient::sendNTPpacket(byte* address) {
-	// set all bytes in the buffer to 0
-	memset(pb, 0, 48);
-	// Initialize values needed to form NTP request
-	// (see URL above for details on the packets)
-	pb[0] = 0b11100011;   // LI, Version, Mode
-	pb[1] = 0;     // Stratum, or type of clock
-	pb[2] = 6;     // Polling Interval
-	pb[3] = 0xEC;  // Peer Clock Precision
-	// 8 bytes of zero for Root Delay & Root Dispersion
-	pb[12]  = 49;
-	pb[13]  = 0x4E;
-	pb[14]  = 49;
-	pb[15]  = 52;
-
-	// all NTP fields have been given values, now
-	// you can send a packet requesting a timestamp:
-	// IDE 1.0 compatible:
-	Udp.beginPacket(address, 123); //NTP requests are to port 123
-	Udp.write(pb,48);
-	Udp.endPacket();
-
-}
-
 WebClient::WebClient() {
 	byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 	if (Ethernet.begin(mac) == 0) {
 		Serial.println("Failed to configure Ethernet using DHCP");
 	}
-
-	Udp.begin(localPort);
 }
 
 uint32_t WebClient::getTimestamp() {

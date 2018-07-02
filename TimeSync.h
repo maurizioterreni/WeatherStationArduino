@@ -8,7 +8,7 @@
 #ifndef TIMESYNC_H_
 #define TIMESYNC_H_
 
-#include <Arduino.h>;
+#include <Arduino.h>
 #include <SPI.h>
 #include <RTClib.h>
 
