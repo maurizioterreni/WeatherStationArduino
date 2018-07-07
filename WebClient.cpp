@@ -38,6 +38,9 @@ void WebClient::sendData(String data, uint32_t timestamp) {
 }
 
 unsigned long WebClient::syncTimeNTP() {
+  if(Udp.begin(8888) == 0) {
+    Serial.println("Failed to configure UDP");
+  }
 	char timeServer[] = "time.nist.gov";
 	byte packetBuffer[ 48 ];
 
@@ -56,9 +59,11 @@ unsigned long WebClient::syncTimeNTP() {
 
   // all NTP fields have been given values, now
   // you can send a packet requesting a timestamp:
-  Udp.beginPacket(address, 123); //NTP requests are to port 123
+  Udp.beginPacket(timeServer, 123); //NTP requests are to port 123
   Udp.write(packetBuffer, 48);
   Udp.endPacket();
+
+  Serial.println(timeServer);
 
 	// wait to see if a reply is available
   delay(1000);
@@ -111,17 +116,17 @@ unsigned long WebClient::syncTimeNTP() {
   }
   // wait ten seconds before asking for the time again
 
-	return 0;
-  delay(10000);
+  return 0;
 }
 
 WebClient::WebClient() {
+	Serial.println("Config WebClient");
 	byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 	if (Ethernet.begin(mac) == 0) {
 		Serial.println("Failed to configure Ethernet using DHCP");
 	}
 
-	Udp.begin(8888);
+	
 }
 
 uint32_t WebClient::getTimestamp() {
