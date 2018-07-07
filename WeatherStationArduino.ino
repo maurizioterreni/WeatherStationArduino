@@ -26,35 +26,35 @@ void setup() {
 
 	Serial.println("Weather Station Arduino v" + version);
 
-	unsigned long timestamp = WebClient::getInstance()->syncTimeNTP();
-
-	Serial.println("Timestamp: " + timestamp);
-
-	//TimeSync::getInstance()->syncTime(timestamp);
 }
 
 void loop() {
-//	unsigned long currentMillis = millis();
-//
-//	if(currentMillis - previousMillis_update_sensor >= interval_url){
-//		digitalWrite(ledOKPin, HIGH);
-//		previousMillis_update_sensor  = currentMillis;
-//		WeatherSensor::getInstance()->updateSensor();
-//
-//		Serial.println("Update data!");
-//		digitalWrite(ledOKPin, LOW);
-//	}
-//
-//	if (currentMillis - previousMillis_url >= interval_url) {
-//		previousMillis_url = currentMillis;
-//
-//		digitalWrite(ledOKPin, HIGH);
-//
-//		DataLogger::getInstance()->saveData(TimeSync::getInstance()->getDateAsString(), TimeSync::getInstance()->getTimestamp());
-//		WebClient::getInstance()->sendData(WeatherSensor::getInstance()->toString(), TimeSync::getInstance()->getTimestamp());
-//
-//
-//		digitalWrite(ledOKPin, LOW);
-//	}
+	unsigned long currentMillis = millis();
+
+	if(currentMillis - previousMillis_update_sensor >= interval_url){
+		digitalWrite(ledOKPin, HIGH);
+		previousMillis_update_sensor  = currentMillis;
+		WeatherSensor::getInstance()->updateSensor();
+
+		Serial.println("Update data!");
+		digitalWrite(ledOKPin, LOW);
+	}
+
+	if (currentMillis - previousMillis_url >= interval_url) {
+		previousMillis_url = currentMillis;
+
+		digitalWrite(ledOKPin, HIGH);
+
+		DataLogger::getInstance()->saveData(TimeSync::getInstance()->getDateAsString(), TimeSync::getInstance()->getTimestamp());
+
+		WebClient::getInstance()->sendData(WeatherSensor::getInstance()->getTemperatureBmp(), "1", "1");
+		WebClient::getInstance()->sendData(WeatherSensor::getInstance()->getTemperatureSht(), "1", "2");
+		WebClient::getInstance()->sendData(WeatherSensor::getInstance()->getHumidity(), "1", "3");
+		WebClient::getInstance()->sendData(WeatherSensor::getInstance()->getLux(), "1", "4");
+		WebClient::getInstance()->sendData(WeatherSensor::getInstance()->getPressure(), "1", "5");
+		WebClient::getInstance()->sendData(WeatherSensor::getInstance()->getUvSensor(), "1", "6");
+
+		digitalWrite(ledOKPin, LOW);
+	}
 }
 

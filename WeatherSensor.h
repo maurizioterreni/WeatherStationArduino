@@ -10,33 +10,61 @@
 
 class WeatherSensor
 {
-  public:
-    static const int BMP = 0;
-    static const int SHT = 1;
-    static WeatherSensor* getInstance();
-    int32_t readPressure();
-    float readTemperature(int id);
-    float readHumidity();
-    uint16_t readUv();
-    uint16_t readLux();
-    void updateSensor();
-    String toString();
-  private:
-    static WeatherSensor* instance;
-    WeatherSensor();
-    void init();
-    Adafruit_BMP085 bmp; //Sensore pressione
-    Adafruit_HTU21DF htu; //Sensore temperatura
-    Adafruit_VEML6070 uv; //Sensore UV
-    BH1750 lightMeter; //Sendore Lux
+public:
+	static const int BMP = 0;
+	static const int SHT = 1;
+	static WeatherSensor* getInstance();
+	int32_t readPressure();
+	float readTemperature(int id);
+	float readHumidity();
+	uint16_t readUv();
+	uint16_t readLux();
+	void updateSensor();
+	String toString();
 
-    int32_t pressure;
-    float temperature_bmp;
-    float temperature_sht;
-    float humidity;
-    uint16_t lux;
-    uint16_t uv_sensor;
-    bool bmpIsOn;
+private:
+	static WeatherSensor* instance;
+	WeatherSensor();
+	void init();
+	Adafruit_BMP085 bmp; //Sensore pressione
+	Adafruit_HTU21DF htu; //Sensore temperatura
+	Adafruit_VEML6070 uv; //Sensore UV
+	BH1750 lightMeter; //Sendore Lux
+
+	int32_t pressure;
+	float temperature_bmp;
+	float temperature_sht;
+	float humidity;
+	uint16_t lux;
+	uint16_t uv_sensor;
+	bool bmpIsOn;
+
+
+
+public:
+	float getHumidity() const {
+		return humidity;
+	}
+
+	uint16_t getLux() const {
+		return lux;
+	}
+
+	int32_t getPressure() const {
+		return pressure;
+	}
+
+	float getTemperatureBmp() const {
+		return temperature_bmp;
+	}
+
+	float getTemperatureSht() const {
+		return temperature_sht;
+	}
+
+	uint16_t getUvSensor() const {
+		return uv_sensor;
+	}
 };
 
 #endif

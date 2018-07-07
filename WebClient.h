@@ -9,22 +9,26 @@
 #define WEBCLIENT_H_
 
 #include "Arduino.h"
-#include <SPI.h>
 #include <Ethernet.h>
-#include <EthernetUdp.h>
+#include <SPI.h>
+#include <RestClient.h>
 
 class WebClient {
 public:
 	static WebClient* getInstance();
-	void sendData(String data, uint32_t timestamp);
 	unsigned long syncTimeNTP();
 	uint32_t getTimestamp();
+	void sendData(float data, String unitMeasure, String sensorId);
+	void sendData(String data, String unitMeasure, String sensorId);
+	void sendData(uint16_t data, String unitMeasure, String sensorId);
+	void sendData(int32_t data, String unitMeasure, String sensorId);
 private:
-	EthernetUDP Udp;
+	void sendPostData(String quantity, String unitMeasure, String sensorId);
+	void check_status(int statusCode);
+	void check_response(String response);
+	RestClient client;
 	WebClient();
 	static WebClient* instance;
-
-	EthernetClient client;
 };
 
 #endif /* WEBCLIENT_H_ */
