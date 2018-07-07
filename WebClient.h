@@ -9,9 +9,8 @@
 #define WEBCLIENT_H_
 
 #include "Arduino.h"
-#include <Ethernet.h>
-#include <SPI.h>
-#include <RestClient.h>
+#include <HardwareSerial.h>
+#include <SoftwareSerial.h>
 
 class WebClient {
 public:
@@ -26,9 +25,13 @@ private:
 	void sendPostData(String quantity, String unitMeasure, String sensorId);
 	void check_status(int statusCode);
 	void check_response(String response);
-	RestClient client;
 	WebClient();
 	static WebClient* instance;
+	boolean connectWiFi();
+	void WifiConfig();
+	String ssid;
+	String pass;
+	String dstIp;
 };
 
 #endif /* WEBCLIENT_H_ */
