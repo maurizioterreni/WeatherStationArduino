@@ -137,7 +137,7 @@ void WebClient::sendPostData(String quantity, String unitMeasure, String sensorI
 	cmd = "POST /rest/1.0/measure HTTP/1.0 \r\n Content-Type: application/json\r\n  {\"sensorId\": \""+ sensorId +"\", \"quantity\": \"" + quantity +"\",\"unitMeasureId\": \" "+ unitMeasure +" \",}";
 	Serial1.print("AT+CIPSEND=");
 	Serial1.println(cmd.length());
-	if(Serial2.find(major))
+	if(Serial1.find(major))
 	{
 		//dbgSerial.print(">");
 		Serial.print(major);
