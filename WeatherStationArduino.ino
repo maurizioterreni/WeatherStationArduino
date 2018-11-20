@@ -13,8 +13,8 @@ String version = "0.4.12";
 
 unsigned long previousMillis_url = millis();
 unsigned long previousMillis_update_sensor = millis();
-const long interval_url = 10000;//900000; //15min
-const long interval_update_sensor = 5000;//60000; //1min
+const long interval_url = 900000; //15min
+const long interval_update_sensor = 60000; //1min
 
 const int ledOKPin = 13;
 const int ledKOPin = 13;
@@ -31,7 +31,7 @@ void setup() {
 void loop() {
 	unsigned long currentMillis = millis();
 
-	if(currentMillis - previousMillis_update_sensor >= interval_url){
+	if(currentMillis - previousMillis_update_sensor >= interval_update_sensor){
 		digitalWrite(ledOKPin, HIGH);
 		previousMillis_update_sensor  = currentMillis;
 		WeatherSensor::getInstance()->updateSensor();
