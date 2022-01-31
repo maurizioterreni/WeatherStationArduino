@@ -33,8 +33,8 @@ const long interval_update_sensor = 60000; //1min
 
 ESP8266WebServer server(80); //create a server at port 80
 
-const char* ssid = "TIM-29310447";
-const char* password = "7hkDyc24hznHl3VuYTrPVJv7";
+const char* ssid = "";
+const char* password = "";
 
 void setup() {
 
